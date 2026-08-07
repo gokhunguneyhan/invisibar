@@ -126,6 +126,15 @@ private struct InvisibarSheet: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 6)
 
+            // .secondary, not .tertiary: this is an instruction, and tertiary on a
+            // translucent sheet over busy content was not comfortably readable.
+            // The smaller type already marks it as subordinate.
+            Text("Come back here to turn it off when you're done.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.top, 8)
+
             VStack(spacing: 0) {
                 // Off leads, so turning it back off is the first thing you see.
                 row(.off, "Off", "Leave the real status bar alone.")
@@ -145,22 +154,22 @@ private struct InvisibarSheet: View {
                 .foregroundStyle(.secondary)
 
             HStack(spacing: 6) {
-                Link("x", destination: URL(string: "https://x.com/gokhunguneyhan")!)
-                    .padding(.horizontal, 10).padding(.vertical, 8)
+                Link("X", destination: URL(string: "https://x.com/gokhunguneyhan")!)
+                    .padding(.horizontal, 10).padding(.vertical, 10)
                 Text("/").foregroundStyle(.tertiary)
-                Link("github", destination:
+                Link("GitHub", destination:
                         URL(string: "https://github.com/gokhunguneyhan/invisibar")!)
-                    .padding(.horizontal, 10).padding(.vertical, 8)
+                    .padding(.horizontal, 10).padding(.vertical, 10)
             }
-            // Bigger than the footnote above it: these are tap targets, and
-            // .footnote was too small to hit reliably.
-            .font(.callout)
+            // Same size as the credit above. The padding, not the type size,
+            // carries the tap target.
+            .font(.footnote)
             .foregroundStyle(.secondary)
             .padding(.bottom, 16)
         }
         .padding(.horizontal, 24)
         .frame(maxWidth: .infinity)
-        .presentationDetents([.height(400)])
+        .presentationDetents([.height(415)])
         .presentationDragIndicator(.visible)
     }
 

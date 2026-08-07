@@ -201,6 +201,12 @@ class _InvisibarSheet extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 15, color: dim),
           ),
+          const SizedBox(height: 8),
+          Text(
+            "Come back here to turn it off when you're done.",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 13, color: dim),
+          ),
           const SizedBox(height: 20),
           row(InvisibarMode.off, 'Off', 'Leave the real status bar alone.'),
           const Divider(height: 1),
@@ -215,9 +221,9 @@ class _InvisibarSheet extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _LinkText('x', 'https://x.com/gokhunguneyhan', dim),
-              Text('/', style: TextStyle(fontSize: 16, color: dim)),
-              _LinkText('github',
+              _LinkText('X', 'https://x.com/gokhunguneyhan', dim),
+              Text('/', style: TextStyle(fontSize: 13, color: dim)),
+              _LinkText('GitHub',
                   'https://github.com/gokhunguneyhan/invisibar', dim),
             ],
           ),
@@ -240,7 +246,7 @@ class _LinkText extends StatelessWidget {
     // keeping this file plugin-free is worth more than opening a browser.
     return TextButton(
       onPressed: () => Clipboard.setData(ClipboardData(text: url)),
-      child: Text(label, style: TextStyle(fontSize: 16, color: color)),
+      child: Text(label, style: TextStyle(fontSize: 13, color: color)),
     );
   }
 }

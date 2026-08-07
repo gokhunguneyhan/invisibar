@@ -170,6 +170,10 @@ function InvisibarSheet({open, onClose}: {open: boolean; onClose: () => void}) {
           Also removes the red recording indicator.
         </Text>
 
+        <Text style={[s.note, {color: dim}]}>
+          Come back here to turn it off when you're done.
+        </Text>
+
         <View style={s.rows}>
           {row('off', 'Off', 'Leave the real status bar alone.')}
           <View style={[s.divider, {backgroundColor: line}]} />
@@ -185,7 +189,7 @@ function InvisibarSheet({open, onClose}: {open: boolean; onClose: () => void}) {
           <Pressable
             hitSlop={8}
             onPress={() => Linking.openURL('https://x.com/gokhunguneyhan')}>
-            <Text style={[s.linkOut, {color: dim}]}>x</Text>
+            <Text style={[s.linkOut, {color: dim}]}>X</Text>
           </Pressable>
           <Text style={[s.linkOut, {color: line}]}>/</Text>
           <Pressable
@@ -193,7 +197,7 @@ function InvisibarSheet({open, onClose}: {open: boolean; onClose: () => void}) {
             onPress={() =>
               Linking.openURL('https://github.com/gokhunguneyhan/invisibar')
             }>
-            <Text style={[s.linkOut, {color: dim}]}>github</Text>
+            <Text style={[s.linkOut, {color: dim}]}>GitHub</Text>
           </Pressable>
         </View>
       </View>
@@ -322,7 +326,10 @@ const s = StyleSheet.create({
     alignItems: 'center',
     marginTop: 4,
   },
-  linkOut: {fontSize: 16, paddingHorizontal: 10, paddingVertical: 8},
+  // Same size as the credit above. The padding, not the type size, carries
+  // the tap target.
+  linkOut: {fontSize: 13, paddingHorizontal: 10, paddingVertical: 10},
+  note: {fontSize: 13, textAlign: 'center', marginTop: 8},
 
   bar: {position: 'absolute', top: 0, left: 0, right: 0, height: 54},
   time: {position: 'absolute', fontSize: 17, fontWeight: '600', textAlign: 'center'},
