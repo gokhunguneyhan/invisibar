@@ -1,9 +1,9 @@
 ---
-name: ios-recording-mode
+name: nobar
 description: Add a debug-only toggle to a SwiftUI iOS app that hides the status bar for clean screen recordings, which also removes the red screen-recording indicator from the Dynamic Island. Use when the user wants consistent time and battery across marketing footage, App Preview or App Store video captures, or wants to record their own app without the recording indicator showing.
 ---
 
-# iOS recording mode
+# nobar
 
 A screen recording carries whatever the phone's status bar happened to say: 20:46, a
 red low battery, and the red screen-recording indicator on the Dynamic Island. Across

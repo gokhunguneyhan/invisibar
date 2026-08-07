@@ -1,4 +1,7 @@
-# iOS recording mode
+# nobar
+
+Hide the iOS status bar for screen recordings. Also removes the red recording
+indicator.
 
 A Claude Code skill that adds one debug-only toggle to a SwiftUI app. Flip it, record
 your screen, and the footage comes out with no clock, no battery, no carrier — **and
@@ -26,8 +29,8 @@ to work from, and optionally a consistent status bar composited back on top.
 ## Install
 
 ```bash
-git clone https://github.com/YOURNAME/ios-recording-mode
-cp -r ios-recording-mode ~/.claude/skills/
+git clone https://github.com/YOURNAME/nobar
+cp -r nobar ~/.claude/skills/
 ```
 
 Then ask Claude Code, in the repo of the app you want it in:
