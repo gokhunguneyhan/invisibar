@@ -26,37 +26,50 @@ battery in every clip, and every frame is stamped with a recording indicator. Ap
 own material shows 9:41 and a full battery throughout. This gets you a clean top edge
 to work from, and optionally a consistent status bar composited back on top.
 
-## Install
+## Platforms
 
-```bash
-git clone https://github.com/gokhunguneyhan/invisibar
-cp -r invisibar ~/.claude/skills/
-```
+| | File | Notes |
+|---|---|---|
+| SwiftUI | `swift/Invisibar.swift` | |
+| React Native | `react-native/Invisibar.tsx` | No native modules |
+| Expo | `react-native/Invisibar.tsx` | Same file, unchanged |
+| Flutter | `flutter/invisibar.dart` | No plugins |
 
-Then ask Claude Code, in the repo of the app you want it in:
-
-> add a recording mode toggle for clean screen recordings
-
-Per-project instead of global: copy into `.claude/skills/` inside the project.
+iOS only by nature. Android has no Dynamic Island and draws its own recording
+indicator, which none of this can touch.
 
 ## Usage
 
-Copy `Invisibar.swift` into your app. Two call sites:
+Copy the file for your platform into your app. Two call sites in each.
+
+**SwiftUI**
 
 ```swift
-// 1. at the root
-WindowGroup { RootView().invisibar() }
+WindowGroup { RootView().invisibar() }   // 1. at the root
+InvisibarLink()                          // 2. wherever a footnote fits
+```
 
-// 2. anywhere you can spare a footnote — under a settings list is ideal
-InvisibarLink()
+**React Native / Expo**
+
+```jsx
+<Invisibar><App /></Invisibar>           // 1. at the root
+<InvisibarLink />                        // 2. wherever a footnote fits
+```
+
+**Flutter**
+
+```dart
+runApp(const Invisibar(child: MyApp())); // 1. at the root
+const InvisibarLink()                    // 2. wherever a footnote fits
 ```
 
 That's it. The footnote is a dim bit of text reading "Invisibar". Tap it, pick **Hide
 status bar** or **Replace status bar**, then scroll the link out of frame and record.
+A small dot appears beside the footnote while it's on.
 
-`.invisibar()` goes on the **outermost** view your app shows. If your root `body`
-returns early for anything — a launch argument, a loading state, a separate
-onboarding root — apply it above the branch, or those screens keep their status bar.
+The root wrapper goes on the **outermost** thing your app shows. If your root returns
+early for anything — a launch argument, a loading state, a separate onboarding root —
+apply it above the branch, or those screens keep their status bar.
 
 ### Replace mode
 
@@ -64,10 +77,14 @@ Draws a clean 9:41 and a full battery instead of hiding everything, so what you 
 is already finished and there's no editing step. Geometry is measured from real
 captures and lands within 1–2px of the real bar on the reference device.
 
+No Wi-Fi glyph outside SwiftUI: the arcs need SVG, and these files stay
+dependency-free.
+
 ### Release safety
 
-`InvisibarLink` renders `EmptyView` in Release, `.invisibar()` returns your view
-untouched, and no UserDefaults key is read or written. Leave both call sites in.
+Nothing ships. `InvisibarLink` renders empty, the root wrapper returns your app
+untouched, and no storage is touched — behind `#if DEBUG`, `__DEV__` and `kDebugMode`
+respectively.
 
 Measured on a real Release build, against a control string:
 
@@ -75,13 +92,19 @@ Measured on a real Release build, against a control string:
 |---|---|---|
 | `invisibarMode` | 1 | **0** |
 | `"Hide status bar"` | 1 | **0** |
+| `"Built by Gokhun"` | 1 | **0** |
 | `"9:41"` | 2 | **0** |
-| `InvisibarLink` | 5 | 2 — type metadata only |
 | `didRepairPermissions` (control) | 1 | 2 |
 
-The type name survives because the API has to exist for your call sites to compile.
-It carries no behaviour. The control being non-zero is what makes the zeros mean
-anything.
+In SwiftUI the type names survive as metadata, because the API has to exist for your
+call sites to compile. They carry no behaviour. The control being non-zero is what
+makes the zeros mean anything.
+
+### Not persisted, on purpose
+
+React Native and Flutter keep the mode in memory, so it resets on reload. That avoids
+a storage dependency, and it means you can't get stuck with a hidden status bar and no
+obvious way back. SwiftUI persists it, because `@AppStorage` is free there.
 
 ## The two bugs it exists to prevent
 

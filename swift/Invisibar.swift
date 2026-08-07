@@ -107,62 +107,68 @@ private struct InvisibarLinkBody: View {
 
 private struct InvisibarSheet: View {
     @Binding var raw: String
-    @Environment(\.dismiss) private var dismiss
 
     private var mode: InvisibarMode { InvisibarMode(rawValue: raw) ?? .off }
 
-    /// Tapping the active row turns it off, so two rows cover three states and there
-    /// is no "Off" row to explain.
-    private func pick(_ m: InvisibarMode) {
-        raw = (mode == m ? .off : m).rawValue
-    }
-
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(spacing: 0) {
             Text("Invisibar")
                 .font(.title3.weight(.semibold))
                 .padding(.top, 24)
 
-            Text("For screenshots and screen recordings. Also removes the red "
+            // The break is deliberate: one line for what it is, one for the part
+            // people do not expect.
+            Text("For screenshots and screen recordings.\nAlso removes the red "
                  + "recording indicator.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 6)
 
             VStack(spacing: 0) {
+                // Off leads, so turning it back off is the first thing you see.
+                row(.off, "Off", "Leave the real status bar alone.")
+                Divider().padding(.leading, 2)
                 row(.hide, "Hide status bar",
                     "No clock, battery, signal or recording indicator.")
                 Divider().padding(.leading, 2)
                 row(.replace, "Replace status bar",
                     "Draws a clean 9:41 and a full battery instead.")
             }
-            .padding(.top, 22)
+            .padding(.top, 20)
 
-            Spacer(minLength: 24)
+            Spacer(minLength: 16)
 
-            HStack(spacing: 14) {
+            Text("Built by Gokhun Guneyhan")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+
+            HStack(spacing: 6) {
                 Link("x", destination: URL(string: "https://x.com/gokhunguneyhan")!)
+                    .padding(.horizontal, 10).padding(.vertical, 8)
                 Text("/").foregroundStyle(.tertiary)
                 Link("github", destination:
                         URL(string: "https://github.com/gokhunguneyhan/invisibar")!)
+                    .padding(.horizontal, 10).padding(.vertical, 8)
             }
-            .font(.footnote)
+            // Bigger than the footnote above it: these are tap targets, and
+            // .footnote was too small to hit reliably.
+            .font(.callout)
             .foregroundStyle(.secondary)
-            .padding(.bottom, 20)
+            .padding(.bottom, 16)
         }
         .padding(.horizontal, 24)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .presentationDetents([.height(340)])
+        .frame(maxWidth: .infinity)
+        .presentationDetents([.height(400)])
         .presentationDragIndicator(.visible)
     }
 
     private func row(_ m: InvisibarMode, _ title: String, _ subtitle: String) -> some View {
         Button {
-            pick(m)
-            // Close on selecting, so the sheet is not in the way of the thing you
-            // are about to record. Turning one OFF keeps it open.
-            if mode == m { dismiss() }
+            // Deliberately does NOT dismiss. You often want to try one, look, and
+            // try the other; a sheet that closes on every tap makes that tedious.
+            raw = m.rawValue
         } label: {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
@@ -176,6 +182,7 @@ private struct InvisibarSheet: View {
                     .font(.system(size: 20))
             }
             .contentShape(Rectangle())
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, 12)
         }
         .buttonStyle(.plain)
