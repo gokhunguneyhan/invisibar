@@ -28,12 +28,15 @@ to work from, and optionally a consistent status bar composited back on top.
 
 ## Platforms
 
-| | File | Notes |
-|---|---|---|
-| SwiftUI | `swift/Invisibar.swift` | |
-| React Native | `react-native/Invisibar.tsx` | No native modules |
-| Expo | `react-native/Invisibar.tsx` | Same file, unchanged |
-| Flutter | `flutter/invisibar.dart` | No plugins |
+| | File | Notes | Verified |
+|---|---|---|---|
+| SwiftUI | `swift/Invisibar.swift` | | Run on device and simulator |
+| React Native | `react-native/Invisibar.tsx` | No native modules | Type-checks against RN 0.76 |
+| Expo | `react-native/Invisibar.tsx` | Same file, unchanged | Type-checks against RN 0.76 |
+| Flutter | `flutter/invisibar.dart` | No plugins | **Not yet run in an app** |
+
+The Flutter port is written but has not been run. If you try it, an issue either way
+is welcome.
 
 iOS only by nature. Android has no Dynamic Island and draws its own recording
 indicator, which none of this can touch.

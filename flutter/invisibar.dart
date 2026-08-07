@@ -49,28 +49,60 @@ class Invisibar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!kDebugMode) return child;
+    return _InvisibarRoot(child: child);
+  }
+}
+
+class _InvisibarRoot extends StatefulWidget {
+  const _InvisibarRoot({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_InvisibarRoot> createState() => _InvisibarRootState();
+}
+
+class _InvisibarRootState extends State<_InvisibarRoot> {
+  @override
+  void initState() {
+    super.initState();
+    _mode.addListener(_applyChrome);
+  }
+
+  @override
+  void dispose() {
+    _mode.removeListener(_applyChrome);
+    super.dispose();
+  }
+
+  /// Applied from a listener, NOT from build(). Calling SystemChrome during build
+  /// re-fires on every rebuild, which is a side effect in a place that should have
+  /// none.
+  void _applyChrome() {
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: _mode.value == InvisibarMode.off
+          ? SystemUiOverlay.values
+          : const <SystemUiOverlay>[],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return ValueListenableBuilder<InvisibarMode>(
       valueListenable: _mode,
-      builder: (context, mode, _) {
-        SystemChrome.setEnabledSystemUIMode(
-          SystemUiMode.manual,
-          overlays: mode == InvisibarMode.off
-              ? SystemUiOverlay.values
-              : const <SystemUiOverlay>[],
-        );
-        return Stack(
-          children: [
-            child,
-            if (mode == InvisibarMode.replace)
-              const Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: IgnorePointer(child: _InvisibarStatusBar()),
-              ),
-          ],
-        );
-      },
+      builder: (context, mode, _) => Stack(
+        children: [
+          widget.child,
+          if (mode == InvisibarMode.replace)
+            const Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: IgnorePointer(child: _InvisibarStatusBar()),
+            ),
+        ],
+      ),
     );
   }
 }
@@ -300,7 +332,7 @@ class _Battery extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: tint.withOpacity(0.38), width: 1),
+                  border: Border.all(color: tint.withAlpha(97), width: 1),
                   borderRadius: BorderRadius.circular(3.8),
                 ),
               ),
@@ -324,7 +356,7 @@ class _Battery extends StatelessWidget {
           width: 1.6,
           height: 4.2,
           decoration: BoxDecoration(
-            color: tint.withOpacity(0.38),
+            color: tint.withAlpha(97),
             borderRadius: BorderRadius.circular(0.8),
           ),
         ),
