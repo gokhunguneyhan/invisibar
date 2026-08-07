@@ -29,7 +29,7 @@ to work from, and optionally a consistent status bar composited back on top.
 ## Install
 
 ```bash
-git clone https://github.com/YOURNAME/invisibar
+git clone https://github.com/gokhunuguneyhan/invisibar
 cp -r invisibar ~/.claude/skills/
 ```
 
