@@ -1,0 +1,10 @@
+# GitHub shows the language with the most bytes, and the four ports here are within
+# 900 bytes of each other — so the badge was decided by coincidence rather than by
+# what the repo is about. Swift is the reference implementation and the subject is
+# iOS, so everything else is marked undetectable to keep the label honest.
+#
+# This only affects the language badge and the stats bar. Nothing is hidden: the
+# ports are still browsable, searchable and diffable as normal.
+flutter/*      linguist-detectable=false
+react-native/* linguist-detectable=false
+tools/*        linguist-detectable=false
