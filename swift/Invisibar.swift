@@ -126,15 +126,6 @@ private struct InvisibarSheet: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 6)
 
-            // .secondary, not .tertiary: this is an instruction, and tertiary on a
-            // translucent sheet over busy content was not comfortably readable.
-            // The smaller type already marks it as subordinate.
-            Text("Come back here to turn it off when you're done.")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.top, 8)
-
             VStack(spacing: 0) {
                 // Off leads, so turning it back off is the first thing you see.
                 row(.off, "Off", "Leave the real status bar alone.")
@@ -169,7 +160,7 @@ private struct InvisibarSheet: View {
         }
         .padding(.horizontal, 24)
         .frame(maxWidth: .infinity)
-        .presentationDetents([.height(415)])
+        .presentationDetents([.height(385)])
         .presentationDragIndicator(.visible)
     }
 

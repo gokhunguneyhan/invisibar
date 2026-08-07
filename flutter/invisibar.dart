@@ -201,12 +201,6 @@ class _InvisibarSheet extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 15, color: dim),
           ),
-          const SizedBox(height: 8),
-          Text(
-            "Come back here to turn it off when you're done.",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 13, color: dim),
-          ),
           const SizedBox(height: 20),
           row(InvisibarMode.off, 'Off', 'Leave the real status bar alone.'),
           const Divider(height: 1),

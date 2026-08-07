@@ -170,10 +170,6 @@ function InvisibarSheet({open, onClose}: {open: boolean; onClose: () => void}) {
           Also removes the red recording indicator.
         </Text>
 
-        <Text style={[s.note, {color: dim}]}>
-          Come back here to turn it off when you're done.
-        </Text>
-
         <View style={s.rows}>
           {row('off', 'Off', 'Leave the real status bar alone.')}
           <View style={[s.divider, {backgroundColor: line}]} />
@@ -329,7 +325,6 @@ const s = StyleSheet.create({
   // Same size as the credit above. The padding, not the type size, carries
   // the tap target.
   linkOut: {fontSize: 13, paddingHorizontal: 10, paddingVertical: 10},
-  note: {fontSize: 13, textAlign: 'center', marginTop: 8},
 
   bar: {position: 'absolute', top: 0, left: 0, right: 0, height: 54},
   time: {position: 'absolute', fontSize: 17, fontWeight: '600', textAlign: 'center'},
