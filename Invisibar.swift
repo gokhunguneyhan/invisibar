@@ -1,5 +1,5 @@
 //  Invisibar.swift
-//  https://github.com/gokhunuguneyhan/invisibar
+//  https://github.com/gokhunguneyhan/invisibar
 //
 //  Hide the iOS status bar for your product screenshots and recordings — which also
 //  removes the red screen-recording indicator from the Dynamic Island.
@@ -145,7 +145,7 @@ private struct InvisibarSheet: View {
                 Link("x", destination: URL(string: "https://x.com/gokhunguneyhan")!)
                 Text("/").foregroundStyle(.tertiary)
                 Link("github", destination:
-                        URL(string: "https://github.com/gokhunuguneyhan/invisibar")!)
+                        URL(string: "https://github.com/gokhunguneyhan/invisibar")!)
             }
             .font(.footnote)
             .foregroundStyle(.secondary)
