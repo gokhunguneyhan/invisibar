@@ -39,25 +39,49 @@ Then ask Claude Code, in the repo of the app you want it in:
 
 Per-project instead of global: copy into `.claude/skills/` inside the project.
 
-## What it writes
+## Usage
 
-Three small edits, none of them app-specific:
+Copy `Invisibar.swift` into your app. Two call sites:
 
 ```swift
-// 1. The flag. The whole TYPE behind #if DEBUG, not just its value.
-#if DEBUG
-enum RecordingMode { static let key = "recordingModeEnabled" }
-#endif
+// 1. at the root
+WindowGroup { RootView().invisibar() }
 
-// 2. Read it at the outermost view, above every early return.
-var body: some View {
-    content.statusBarHidden(hideStatusBarForCapture)
-}
-
-// 3. A toggle beside the app's existing debug switches.
+// 2. anywhere you can spare a footnote — under a settings list is ideal
+InvisibarLink()
 ```
 
-Plus the verification to prove the flag can't reach a shipping build.
+That's it. The footnote is a dim bit of text reading "Invisibar". Tap it, pick **Hide
+status bar** or **Replace status bar**, then scroll the link out of frame and record.
+
+`.invisibar()` goes on the **outermost** view your app shows. If your root `body`
+returns early for anything — a launch argument, a loading state, a separate
+onboarding root — apply it above the branch, or those screens keep their status bar.
+
+### Replace mode
+
+Draws a clean 9:41 and a full battery instead of hiding everything, so what you record
+is already finished and there's no editing step. Geometry is measured from real
+captures and lands within 1–2px of the real bar on the reference device.
+
+### Release safety
+
+`InvisibarLink` renders `EmptyView` in Release, `.invisibar()` returns your view
+untouched, and no UserDefaults key is read or written. Leave both call sites in.
+
+Measured on a real Release build, against a control string:
+
+| String | Debug | Release |
+|---|---|---|
+| `invisibarMode` | 1 | **0** |
+| `"Hide status bar"` | 1 | **0** |
+| `"9:41"` | 2 | **0** |
+| `InvisibarLink` | 5 | 2 — type metadata only |
+| `didRepairPermissions` (control) | 1 | 2 |
+
+The type name survives because the API has to exist for your call sites to compile.
+It carries no behaviour. The control being non-zero is what makes the zeros mean
+anything.
 
 ## The two bugs it exists to prevent
 
@@ -89,10 +113,10 @@ the wrong reason:
 - **The simulator can't test the recording indicator at all.** `simctl io recordVideo`
   never draws one, so a simulator capture proves nothing either way.
 
-## Optional: put a status bar back
+## Optional: the PNG overlay
 
-Only if you want one visible in the final video. Most App Previews have no status bar
-and look fine.
+Replace mode covers most cases. The PNG is for editing after the fact — changing the
+time or battery without re-recording, or footage already captured in hide mode.
 
 ```bash
 python3 tools/make_status_bar.py --width 1206 --height 2622 --time 9:41 --out bar.png

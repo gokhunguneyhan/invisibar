@@ -21,78 +21,55 @@ all. This skill is for capture on the phone alone.
 
 ## What to build
 
-Three edits. The gating is the part that is easy to get wrong, so do it in this order
-and verify with §Verify before saying it works.
+`Invisibar.swift` in this repo is the whole thing. Copy it into the project and add
+two call sites — do not retype it from memory.
 
-### 1. The flag
-
-The **whole type** goes behind `#if DEBUG`, not just its value:
-
-```swift
-#if DEBUG
-enum RecordingMode {
-    static let key = "recordingModeEnabled"
-}
-#endif
+```bash
+cp <skill-dir>/Invisibar.swift <project>/Sources/
 ```
 
-Gating only the value leaves a Release binary that reads the key and would hide the
-status bar if anything ever set it. See §The mistake to avoid.
-
-### 2. Read it at the root view
-
-Both the stored property and the read are `#if DEBUG`, so Release has no path:
+**1. The modifier, at the outermost view the app shows:**
 
 ```swift
-#if DEBUG
-@AppStorage(RecordingMode.key) private var recordingMode = false
-#endif
-
-/// false at compile time in Release: the stored property does not exist there.
-private var hideStatusBarForCapture: Bool {
-    #if DEBUG
-    recordingMode
-    #else
-    false
-    #endif
-}
+WindowGroup { RootView().invisibar() }
 ```
 
-Apply it at the **outermost** view the app ever shows:
+**2. The footnote, anywhere it can sit quietly** — under a settings list is ideal,
+because a small scroll takes it out of frame:
 
 ```swift
-var body: some View {
-    content.statusBarHidden(hideStatusBarForCapture)
-}
+InvisibarLink()
 ```
 
-`@AppStorage` rather than a plain `static var` so the toggle takes effect the moment
-it is flipped, with no relaunch.
+That is the entire integration. Do not build a settings card, a toggle row, or a
+separate screen: the footnote is deliberately small so it can be moved out of shot,
+and a card cannot be.
 
-**Where it goes matters more than it looks.** If `body` has any early return — a
-launch-argument branch, a loading state, a separate onboarding root — a modifier
-applied further in will silently miss those screens. Read the whole of `body` and
-put it above every branch. This is the failure mode in §The mistake to avoid.
+If the project uses a generated Xcode project (xcodegen, Tuist), regenerate after
+copying the file in or the build fails on a missing input.
 
-No hosting controller and no `prefersStatusBarHidden` override is needed. That advice
-is for UIKit; in SwiftUI the modifier is the whole job.
+### The one thing to get right
 
-### 3. The toggle
+Apply `.invisibar()` **above every early return** in the root `body`. If `body`
+returns early for a launch argument, a loading state, or a separate onboarding root,
+a modifier applied inside one branch silently misses the others. Read the whole of
+`body` before choosing where it goes. See §The mistake to avoid.
 
-Beside whatever debug switches the app already has, inside their `#if DEBUG` block.
-Match the surrounding style rather than introducing a new one. Two things to get
-right:
+### How it is gated
 
-- Bind straight to `@AppStorage(RecordingMode.key)`, so it and the root view observe
-  the same key.
-- Say in the subtitle what it does and that it is for capture, so it is not mistaken
-  for a user setting during a later audit.
+For a file people paste into their own app, the API must exist in Release or their
+call sites will not compile. So it is gated by *behaviour*, not by the type:
 
-If the app has no debug section, put it behind whatever gate its other internal
-tools use, and make sure that gate is compile-time or an admin check, never a plain
-boolean a user could reach.
+- `InvisibarLink` renders `EmptyView` in Release.
+- `.invisibar()` returns the view untouched in Release.
+- Everything with behaviour — the mode enum, the sheet, the drawn bar, the
+  UserDefaults key — is inside `#if DEBUG` and does not exist in a Release build.
 
----
+The type names survive as metadata. That is expected and carries nothing.
+
+**This differs from gating an app-internal flag**, where you should put the whole
+type behind `#if DEBUG` so nothing exists at all. Both are correct for their case;
+the difference is whether anyone outside your target has to compile against it.
 
 ## Verify
 
@@ -112,21 +89,18 @@ the traps; the short version:
 
 ## The mistake to avoid
 
-Both of these were made and caught on a real implementation, and both looked correct
-in review:
+Both were made on a real implementation, and both looked correct in review.
 
-**Gating the value instead of the type.** `RecordingMode.key` outside the `#if DEBUG`
-with an unconditional `@AppStorage` reading it. It compiles, it looks DEBUG-only, and
-`strings` on the Release binary finds the key twice — the shipping build really does
-read it. Gate the type and neither call site compiles in Release.
+**Gating the value instead of the type.** In an app-internal version, the UserDefaults
+key sat outside `#if DEBUG` with an unconditional `@AppStorage` reading it. It
+compiles, it looks DEBUG-only, and `strings` on the Release binary finds the key
+twice — the shipping build really does read it and would hide the status bar if
+anything set it.
 
-**Applying the modifier below an early return.** `body` returned early for a
-launch-argument branch, so `.statusBarHidden()` on the main body never reached that
-screen — which happened to be the staged screen most likely to be recorded. The flag
-did nothing there and the before/after screenshots were byte-identical across the top
-1840 rows.
-
----
+**Applying the modifier below an early return.** The root `body` returned early for a
+launch-argument branch, so the modifier never reached that screen — which happened to
+be the staged screen most likely to be recorded. The flag did nothing there, and the
+before/after screenshots were byte-identical across the top 1840 rows.
 
 ## Cheaper option, mention it first
 
@@ -153,29 +127,22 @@ recording mode and QuickTime remove.
 
 ---
 
-## Optional: composite a status bar back
+## If they want a status bar visible, not just gone
 
-Only if the user wants a visible status bar in the final video, the way Apple's
-marketing shows 9:41. Hiding the bar leaves a clean top edge, which is fine on its
-own and what most App Previews have.
+Two routes, and the in-app one is almost always better.
 
-`tools/make_status_bar.py` writes a transparent PNG with time, signal, Wi-Fi and
-battery. Drop it on a track above the footage in any editor, aligned top-left, no
-scaling.
+**Replace mode**, in the sheet. Draws a clean 9:41 and a full battery live, so what
+you record is already finished and there is no editing step. Geometry is measured
+from real captures and lands within 1–2px of the real bar on the reference device.
+Check it against a screenshot of the user's own device before they shoot a lot of
+footage.
 
-```bash
-python3 tools/make_status_bar.py --width 1206 --out bar.png
-python3 tools/make_status_bar.py --width 1206 --height 2622 --time 9:41 --battery 100 --out bar.png
-```
+**A PNG overlay**, via `tools/make_status_bar.py`, for editing after the fact — useful
+when the time or battery needs to change without re-recording, or when footage was
+already captured in hide mode. `references/overlay.md` covers it, along with the
+ffmpeg route and the App Preview resolution requirement that rejects
+native-resolution uploads.
 
-Passing `--height` makes it full-frame, which is harder to misalign.
-
-**It cannot restore a frosted backdrop.** Hiding the status bar takes its glass with
-it, so content runs sharp to the top edge. A PNG cannot blur what is beneath it, and
-one that tries reads as a milky wash. If the frosted look is wanted, blur a duplicate
-of the footage in the editor and mask it to the top strip. `references/overlay.md`
-covers that, the ffmpeg route, and the App Preview resolution requirement that
-rejects native-resolution uploads.
-
-Do **not** pass `--island-cover` for footage shot with recording mode on. There is no
-indicator left to hide, and the cover would only paint black over black.
+Neither can restore the frosted backdrop. Hiding the status bar takes its glass with
+it, so content runs sharp to the top edge. If that look is wanted, blur a duplicate
+layer in the editor and mask it to the top strip.
