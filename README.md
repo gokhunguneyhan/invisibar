@@ -1,4 +1,4 @@
-# nobar
+# invisibar
 
 Hide the iOS status bar for screen recordings. Also removes the red recording
 indicator.
@@ -29,8 +29,8 @@ to work from, and optionally a consistent status bar composited back on top.
 ## Install
 
 ```bash
-git clone https://github.com/YOURNAME/nobar
-cp -r nobar ~/.claude/skills/
+git clone https://github.com/YOURNAME/invisibar
+cp -r invisibar ~/.claude/skills/
 ```
 
 Then ask Claude Code, in the repo of the app you want it in:
