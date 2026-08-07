@@ -3,12 +3,12 @@
 Hide the iOS status bar for screen recordings. Also removes the red recording
 indicator.
 
-A Claude Code skill that adds one debug-only toggle to a SwiftUI app. Flip it, record
-your screen, and the footage comes out with no clock, no battery, no carrier — **and
-no red screen-recording indicator on the Dynamic Island.**
+One file you drop into your app, for SwiftUI, React Native, Expo or Flutter. It adds a
+small debug-only footnote; tap it, record your screen, and the footage comes out with
+no clock, no battery, no carrier — **and no red screen-recording indicator on the
+Dynamic Island.**
 
-That last part is the surprise. The indicator is drawn by SpringBoard, not your app,
-so the reasonable assumption is that an app-level modifier can't touch it. It can:
+Also packaged as a Claude Code skill, if you would rather it wired itself in.
 
 | While screen recording | Toggle off | Toggle on |
 |---|---|---|
@@ -168,8 +168,6 @@ a full battery and no carrier, and there's no recording indicator because the ca
 happens on the Mac. The status bar is real, so its backdrop is real and reacts to
 content for free.
 
-This skill is for capture on the phone alone. It says so up front, and tells Claude to
-mention QuickTime before writing any code.
 
 ## Requirements
 
