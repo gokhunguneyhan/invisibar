@@ -8,7 +8,10 @@ small debug-only footnote; tap it, record your screen, and the footage comes out
 no clock, no battery, no carrier — **and no red screen-recording indicator on the
 Dynamic Island.**
 
-Also packaged as a Claude Code skill, if you would rather it wired itself in.
+Also packaged for coding agents, if you would rather it wired itself in: drop the
+repo in and point your agent at `SKILL.md`. It is plain Markdown, so Claude Code,
+Codex, Cursor and the rest all read it the same way. `AGENTS.md` and the Claude
+Code skill frontmatter just help them find it on their own.
 
 | While screen recording | Toggle off | Toggle on |
 |---|---|---|
