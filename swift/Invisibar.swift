@@ -116,11 +116,11 @@ private struct InvisibarSheet: View {
     var body: some View {
         VStack(spacing: 0) {
             InvisibarMascot()
-                .padding(.top, 20)
+                .padding(.top, 44)
 
             Text("Invisibar")
                 .font(.title3.weight(.semibold))
-                .padding(.top, 4)
+                .padding(.top, 28)
 
             // The break is deliberate: one line for what it is, one for the part
             // people do not expect.
@@ -166,7 +166,7 @@ private struct InvisibarSheet: View {
         }
         .padding(.horizontal, 24)
         .frame(maxWidth: .infinity)
-        .presentationDetents([.height(455)])
+        .presentationDetents([.height(485)])
         .presentationDragIndicator(.visible)
     }
 
@@ -219,8 +219,9 @@ private struct InvisibarModifier: ViewModifier {
 // single drop-in file. A PNG would mean every adopter also has to add three files to
 // their own catalog, which is most of the reason not to bother with a small tool.
 //
-// The source is 480x180 (@3x for a 160x60pt slot) with a transparent background, so it
-// sits on a light or a dark sheet without a plate behind it.
+// The source is 480x180, drawn into a 112x42pt slot (the same 8:3 ratio), so it is
+// oversampled rather than stretched. Transparent background, so it sits on a light or a
+// dark sheet without a plate behind it.
 private let invisibarMascotPNG = """
         iVBORw0KGgoAAAANSUhEUgAAAeAAAAC0CAMAAAB7Yg/yAAACo1BMVEUAAAAmLzNOXWdTancTFR6FnaxMaHZ1gpYuPUu9
         xNA3lZnEyNRAUGOIk6hNfYpFtbeJk6preI6wutE3R1tSy8uJk6vc4u8nipKosciMmbFVYHlf3989s7QwRVu5wdh9h5/b
@@ -591,7 +592,7 @@ private struct InvisibarMascot: View {
 
     var body: some View {
         if let image = Self.image {
-            image.resizable().scaledToFit().frame(width: 160, height: 60)
+            image.resizable().scaledToFit().frame(width: 112, height: 42)
         }
     }
 }
