@@ -69,6 +69,10 @@ runApp(const Invisibar(child: MyApp())); // 1. at the root
 const InvisibarLink()                    // 2. wherever a footnote fits
 ```
 
+That's it. No asset catalog entries: the mascot is embedded in the file as base64, so
+"one file" stays literally true. The PNG sources are in `assets/mascot/` if you want
+them for anything else.
+
 That's it. The footnote is a dim bit of text reading "Invisibar". Tap it, pick **Hide
 status bar** or **Replace status bar**, then scroll the link out of frame and record.
 A small dot appears beside the footnote while it's on.
